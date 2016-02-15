@@ -1,0 +1,5 @@
+[package]
+
+name = "crypto_pals"
+version = "0.0.1"
+authors = [ "Richard Sommerville Kaiser.mehow@gmail.com" ]
