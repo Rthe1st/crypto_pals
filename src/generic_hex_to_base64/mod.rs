@@ -12,17 +12,16 @@ use std::char;
 
 pub fn hex_decode<T: PrimInt + FromPrimitive + ToPrimitive>(hex: &str) -> Vec<T> {
     let num_of_nybbles = (size_of::<T>() * 8) / 4;
-    let mut hex_bytes = Vec::new();
     let zero = FromPrimitive::from_u64(0).unwrap();
-    hex_bytes.resize(hex.len()/num_of_nybbles, zero);
-    for (index, character) in hex.chars().enumerate() {
-        let modulus = index % num_of_nybbles;
-        let shift = 4 * ((num_of_nybbles - 1) - modulus);
-        let decoded_hex:T = FromPrimitive::from_u32(character.to_digit(16).unwrap()).unwrap();
-        let hex_index = index/num_of_nybbles;
-        hex_bytes[hex_index] = hex_bytes[hex_index] | (decoded_hex << shift);
-    }
-    hex_bytes
+    hex.as_bytes().chunks(num_of_nybbles).map(|chunk|{
+        let mut decoded = zero;
+        for &byte in chunk {
+            decoded = decoded << 4;
+            let decoded_nybble =  (byte as char).to_digit(16).unwrap();
+            decoded = decoded | FromPrimitive::from_u32(decoded_nybble).unwrap();
+        }
+        decoded
+    }).collect()
 }
 
 pub fn make_length_multiple_of_3<T: FromPrimitive>(raw_binary: &mut Vec<T>) {
