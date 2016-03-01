@@ -5,6 +5,21 @@ extern crate num;
 
 use std::char;
 
+pub fn hex_encode(raw_binary: &[u8]) -> String {
+    let mut encoded = String::new();
+    let mask = 0b1111;
+    for byte in raw_binary {
+        let nybbles = vec![((mask << 4) & byte) >> 4, mask & byte];
+        for nybble in nybbles {
+            encoded.push(match nybble {
+                            0 ... 9 => ('0' as u8) + nybble,
+                            10 ... 15 => ('a' as u8) + (nybble - 10),
+                            _ => panic!("{} cannot be encoded to a hex character", nybble),
+                        } as char);
+        }
+    }
+    encoded
+}
 
 pub fn hex_decode(hex: &str) -> Vec<u8> {
     let num_of_nybbles = 2;//8 bits = 2 nybbles = 1 byte
