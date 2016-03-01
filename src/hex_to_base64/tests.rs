@@ -11,5 +11,5 @@ fn hex_decode_test(){
 fn base_64_encode_test() {
     let based_64_hex = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
     let base_64_encoded = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
-    assert_eq!(base_64_encoded,hex_to_base64::encode_to_base64(hex_to_base64::hex_decode(based_64_hex)));
+    assert_eq!(base_64_encoded,hex_to_base64::encode_to_base64(&hex_to_base64::hex_decode(based_64_hex)));
 }

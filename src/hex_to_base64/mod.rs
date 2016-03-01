@@ -17,12 +17,6 @@ pub fn hex_decode(hex: &str) -> Vec<u8> {
     }).collect()
 }
 
-pub fn make_length_multiple_of_3(raw_binary: &mut Vec<u8>) {
-    while raw_binary.len() % 3 != 0 {
-        raw_binary.push(0);
-    }
-}
-
 fn handle_carried_bits(carried_over_bits: u8, previous_bits_left: u8, binary_element: u8) -> (u8, u8) {
     let type_length = 8;//8 bits
     let bits_left = type_length - (6 - previous_bits_left);
@@ -35,13 +29,12 @@ fn handle_carried_bits(carried_over_bits: u8, previous_bits_left: u8, binary_ele
 //as long as T has 2^x bits, and vector has length 3*y:
 // (2^x)*3*y = (2^(x-1))*y*6 will always be a multiple of 6
 //so check size of T is a power of 2, then ensure number of elements is a multiple of 3
-pub fn encode_to_base64(mut raw_binary: Vec<u8>) -> String {
-    make_length_multiple_of_3(&mut raw_binary);
+pub fn encode_to_base64(raw_binary: &[u8]) -> String {
     let mut base_64 = String::new();
     let mut carried_over_bits = 0;
     let mut previous_bits_left = 0;
     let six_bit_mask = 0b111111;
-    for element in raw_binary {
+    for &element in raw_binary {
         let (to_encode, mut bits_left) = handle_carried_bits(carried_over_bits, previous_bits_left, element);
         base_64.push(encode_to_char(to_encode));
         while bits_left >= 6 {
@@ -51,6 +44,13 @@ pub fn encode_to_base64(mut raw_binary: Vec<u8>) -> String {
         }
         carried_over_bits = six_bit_mask & (element << (6 - bits_left));
         previous_bits_left = bits_left;
+    }
+    if previous_bits_left == 2 {
+        base_64.push(encode_to_char(raw_binary.last().unwrap() << 4));
+        base_64.push_str("==");
+    }else if previous_bits_left == 4 {
+        base_64.push(encode_to_char(raw_binary.last().unwrap() << 2));
+        base_64.push_str("=");
     }
     base_64
 }
