@@ -5,20 +5,16 @@ extern crate num;
 
 use std::char;
 
-//todo: 17 and 18 from https://codereview.stackexchange.com/questions/120692/matasano-cryptopals-conversion-to-base-64-with-generic-types
 
 pub fn hex_decode(hex: &str) -> Vec<u8> {
     let num_of_nybbles = 2;//8 bits = 2 nybbles = 1 byte
-    let mut hex_bytes = Vec::new();
-    hex_bytes.resize(hex.len()/num_of_nybbles, 0);
-    for (index, character) in hex.chars().enumerate() {
-        let modulus = index % num_of_nybbles;
-        let shift = 4 * ((num_of_nybbles - 1) - modulus);
-        let decoded_hex = character.to_digit(16).unwrap() as u8;
-        let hex_index = index/num_of_nybbles;
-        hex_bytes[hex_index] = hex_bytes[hex_index] | (decoded_hex << shift);
-    }
-    hex_bytes
+    hex.as_bytes().chunks(num_of_nybbles).map(|chunk|{
+        let mut decoded:u8 = 0;
+        for &byte in chunk {
+            decoded = (decoded << 4) | (byte as char).to_digit(16).unwrap() as u8;
+        }
+        decoded
+    }).collect()
 }
 
 pub fn make_length_multiple_of_3(raw_binary: &mut Vec<u8>) {
