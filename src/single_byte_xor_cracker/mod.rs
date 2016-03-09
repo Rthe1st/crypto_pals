@@ -5,6 +5,9 @@ use fixed_xor;
 use std::collections::HashMap;
 use std::char;
 
+//todo: add support for other languages (i.e. arabic)
+//todo: function to return n best options
+
 #[derive(Clone)]
 pub struct Solution {
     plain_text: Vec<u8>,
@@ -28,18 +31,31 @@ pub fn crack(cipher_text: &[u8]) -> Solution {
         potential_plain_texts.push(solution);
     }
 
-    potential_plain_texts.iter().min_by_key(|a| a.score).unwrap().clone()//.plain_text.clone()
+    potential_plain_texts.iter().min_by_key(|a| a.score).unwrap().clone()
 }
-
 
 //leters are scored on their relative frequency compared to other letter in the text
 //i.e. z gets a high score for being least common, even if it appears in 20% of the text (all other letters appear in >20%)
 fn relative_score(plain_text: &[u8]) -> usize{
 
-    let frequencies = [('e', 0.127), ('t', 0.091), ('a', 0.082), ('o', 0.075),
-    ('i', 0.070), ('n', 0.067), ('s', 0.063), ('h', 0.061), ('r', 0.06),
-    ('d', 0.043), ('l', 0.04), ('c', 0.028), ('u', 0.028),('m', 0.024),('w', 0.024),('f', 0.022),('g', 0.02),
-    ('y', 0.02),('p', 0.019),('b', 0.015),('v', 0.01),('k', 0.008),('j', 0.002),('x', 0.002),('q', 0.001),('z', 0.001)];
+    //from https://www.cl.cam.ac.uk/~mgk25/lee-essays.pdf page 181
+    let frequencies = [
+        (' ', 0.1217), ('n', 0.0544),
+        ('a', 0.0609), ('o', 0.0600),
+        ('b', 0.0105), ('p', 0.0195),
+        ('c', 0.0284), ('q', 0.0024),
+        ('d', 0.0292), ('r', 0.0495),
+        ('e', 0.1136), ('s', 0.0568),
+        ('f', 0.0179), ('t', 0.0803),
+        ('g', 0.0138), ('u', 0.0243),
+        ('h', 0.0341), ('v', 0.0097),
+        ('i', 0.0544), ('w', 0.0138),
+        ('j', 0.0024), ('x', 0.0024),
+        ('k', 0.0041), ('y', 0.0130),
+        ('l', 0.0292), ('z', 0.0003),
+        ('m', 0.0276)
+    ];
+    let not_in_alphabet_frequency = 0.0657;
 
     let mut language_percents: HashMap<char, f64> = HashMap::new();
     for &(letter, frequency) in frequencies.iter() {
@@ -47,26 +63,27 @@ fn relative_score(plain_text: &[u8]) -> usize{
     }
 
     let mut text_frequencies: HashMap<char, usize> = HashMap::new();
-    let mut score:f64 = 0.0;
-    let not_in_alphabet_penalty = 0.1;
+    let mut not_in_alphabet_count = 0;
     for byte in plain_text {
         let byte_as_char = char::from_u32(*byte as u32).unwrap().to_lowercase().next().unwrap();
         if language_percents.contains_key(&byte_as_char) {
             *text_frequencies.entry(byte_as_char).or_insert(0) += 1;
         }else{
-            score += not_in_alphabet_penalty;
+            not_in_alphabet_count += 1;
         }
     }
 
+    let not_in_alphabet_score = frequency_score(not_in_alphabet_count, plain_text.len(), not_in_alphabet_frequency);
 
-    for (key, value) in text_frequencies.iter_mut() {
-        let actual_percent = *value as f64 / plain_text.len() as f64;
-        let language_percent = language_percents.get(key).unwrap();
-        let diff:f64 = (language_percent - actual_percent).abs();
-        score += diff;
-        //println!("key {} , act {}, lang {} diff: {}", key, actual_percent, language_percent, diff);
-    }
+    text_frequencies.iter().fold(not_in_alphabet_score, |sum, (key, value)| {
+        sum + frequency_score(*value, plain_text.len(), *language_percents.get(key).unwrap())
+    })
 
-    (score * 10000.0) as usize
+}
 
+fn frequency_score(number_of_times: usize, text_length: usize, language_percent: f64) -> usize{
+    let rounding_degree = 10000.0;
+    let actual_percent = number_of_times as f64 / text_length as f64;
+    let diff = (language_percent - actual_percent).abs();
+    (diff * rounding_degree) as usize
 }
