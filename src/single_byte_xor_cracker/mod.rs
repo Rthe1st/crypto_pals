@@ -10,9 +10,10 @@ use std::char;
 
 #[derive(Clone)]
 pub struct Solution {
-    plain_text: Vec<u8>,
-    key: u8,
-    score: usize
+    pub plain_text: Vec<u8>,
+    pub cipher_text: Vec<u8>,
+    pub key: u8,
+    pub score: usize,
 }
 
 pub fn crack(cipher_text: &[u8]) -> Solution {
@@ -27,14 +28,14 @@ pub fn crack(cipher_text: &[u8]) -> Solution {
 
         let score = relative_score(&potential_plain_text);
 
-        let solution = Solution { plain_text: potential_plain_text, key: potential_key, score: score};
+        let solution = Solution { plain_text: potential_plain_text, cipher_text: cipher_text.to_vec(), key: potential_key, score: score};
         potential_plain_texts.push(solution);
     }
 
     potential_plain_texts.iter().min_by_key(|a| a.score).unwrap().clone()
 }
 
-//leters are scored on their relative frequency compared to other letter in the text
+//letters are scored on their relative frequency compared to other letter in the text
 //i.e. z gets a high score for being least common, even if it appears in 20% of the text (all other letters appear in >20%)
 fn relative_score(plain_text: &[u8]) -> usize{
 
