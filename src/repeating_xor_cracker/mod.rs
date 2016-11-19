@@ -12,7 +12,6 @@ fn hamming_distance(bytes_1: Vec<u8>, bytes_2: Vec<u8>) -> Result<u32, Box<Error
         let different_bits = bytes_1[index] ^ bytes_2[index];
         let mut byte_distance = 0;
         for bit in (0..7).map(|x| (2 as u8).pow(x)){
-            println!("{}", bit & different_bits);
             if bit & different_bits == bit{
                 byte_distance += 1;
             }
