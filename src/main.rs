@@ -5,6 +5,7 @@ mod single_byte_xor_cracker;
 mod display_helpers;
 mod repeating_xor;
 mod repeating_xor_cracker;
+mod aes_in_ecb;
 
 fn main() {
 }
