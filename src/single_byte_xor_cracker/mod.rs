@@ -1,6 +1,3 @@
-#[cfg(test)]
-mod tests;
-
 use fixed_xor;
 use std::collections::HashMap;
 use std::char;

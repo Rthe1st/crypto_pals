@@ -1,18 +1,24 @@
+use std::fs::File;
+use std::io::prelude::*;
+
+extern crate base64;
+
 use repeating_xor_cracker;
+use repeating_xor;
 
 #[test]
 fn test_hamming_distance(){
-    match repeating_xor_cracker::hamming_distance(vec![1,2,3], vec![1,2]){
+    match repeating_xor_cracker::hamming_distance(&vec![1,2,3], &vec![1,2]){
         Err(err) => assert!(true),
         Ok(distance) => assert!(false),
     }
-    match repeating_xor_cracker::hamming_distance(vec![1], vec![1]){
+    match repeating_xor_cracker::hamming_distance(&vec![1], &vec![1]){
         Err(err) => assert!(false),
         Ok(distance) => assert_eq!(distance, 0),
     }
     let text_1 = String::from("this is a test");
     let text_2 = String::from("wokka wokka!!!");
-    match repeating_xor_cracker::hamming_distance(text_1.into_bytes(), text_2.into_bytes()){
+    match repeating_xor_cracker::hamming_distance(&(text_1.into_bytes()), &(text_2.into_bytes())){
         Err(err) => assert!(false),
         Ok(distance) => assert_eq!(distance, 37),
     }

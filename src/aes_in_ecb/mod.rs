@@ -1,6 +1,3 @@
-#[cfg(test)]
-mod tests;
-
 extern crate crypto;
 extern crate base64;
 
