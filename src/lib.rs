@@ -1,5 +1,4 @@
 pub mod hex_to_base64;
-pub mod generic_hex_to_base64;
 pub mod fixed_xor;
 pub mod single_byte_xor_cracker;
 pub mod display_helpers;
