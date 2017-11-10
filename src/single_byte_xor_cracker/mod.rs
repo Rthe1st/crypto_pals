@@ -1,4 +1,4 @@
-use fixed_xor;
+use fixed_xor::xor;
 use std::collections::HashMap;
 use std::char;
 
@@ -19,7 +19,7 @@ pub fn crack(cipher_text: &[u8]) -> Solution {
 
         let mut potential_plain_text = Vec::new();
         for byte in cipher_text {
-            let plain_text = fixed_xor::xor(&[*byte], &[potential_key])[0];
+            let plain_text = xor(&[*byte], &[potential_key])[0];
             potential_plain_text.push(plain_text);
         }
 
