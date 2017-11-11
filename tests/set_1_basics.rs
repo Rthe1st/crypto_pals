@@ -8,11 +8,9 @@ use self::crypto_pals::single_byte_xor_cracker;
 use self::crypto_pals::display_helpers::{ u8_vec_to_string };
 use self::crypto_pals::repeating_xor_cracker;
 use self::crypto_pals::aes_in_ecb;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::BufRead;
 use self::crypto_pals::repeating_xor;
-use std::io::prelude::*;
+use std::fs::File;
+use std::io::{ BufReader, BufRead, Read};
 
 #[test]
 fn challenge_1_convert_hex_to_base64() {
