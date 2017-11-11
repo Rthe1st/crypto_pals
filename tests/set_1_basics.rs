@@ -11,6 +11,7 @@ use self::crypto_pals::aes_in_ecb;
 use self::crypto_pals::repeating_xor;
 use std::fs::File;
 use std::io::{ BufReader, BufRead, Read};
+use std::collections::HashMap;
 
 #[test]
 fn challenge_1_convert_hex_to_base64() {
@@ -97,4 +98,32 @@ fn challenge_7_aes_in_ecb_mode(){
     file.read_to_string(&mut correct_plain_text).unwrap();
 
     assert_eq!(correct_plain_text, String::from_utf8_lossy(&plain_text));
+}
+
+#[test]
+fn challenge_8_detect_aes_in_ecb_mode(){
+    let file = File::open("./tests/challenge_8/cipher_texts.txt").unwrap();
+    let buf_reader = BufReader::new(file);
+    for line in buf_reader.lines().map(|l| l.unwrap()) {
+        let cipher_text = &hex_decode(&line);
+        let mut block_occurences = HashMap::new();
+        for block in cipher_text.chunks(16){
+            if !block_occurences.contains_key(block){
+                block_occurences.insert(block, 1);
+            }else{
+                let new_count = block_occurences.get(block).unwrap() + 1;
+                block_occurences.insert(block, new_count);
+            }
+        }
+        let number_of_blocks = line.len()/16;
+        //ciphertext should look random
+        //so with only 10 blocks you wouldn't expect any to appear more then once
+        if block_occurences.len() < number_of_blocks {
+            println!("found ecb candidate");
+            println!("{:?}", block_occurences.values());
+            println!("{:?}", line);
+            return
+        }
+    }
+    assert!(false, "we never found an ecb candidate :(");
 }
