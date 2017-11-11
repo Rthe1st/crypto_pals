@@ -66,7 +66,7 @@ fn challenge_5_repeating_key_xor(){
 
 #[test]
 fn challenge_6_break_repeating_key_xor(){
-    let mut file = File::open("./src/repeating_xor_cracker/cipher_text.txt").unwrap();
+    let mut file = File::open("./tests/challenge_6/cipher_text.txt").unwrap();
     let mut base64_plaintext = String::new();
     file.read_to_string(&mut base64_plaintext).unwrap();
     base64_plaintext = base64_plaintext.replace("\r\n", "");
@@ -83,7 +83,7 @@ fn challenge_6_break_repeating_key_xor(){
 
 #[test]
 fn challenge_7_aes_in_ecb_mode(){
-    let mut file = File::open("./src/aes_in_ecb/cipher_text.txt").unwrap();
+    let mut file = File::open("./tests/challenge_7/cipher_text.txt").unwrap();
     let mut base64_plaintext = String::new();
     file.read_to_string(&mut base64_plaintext).unwrap();
     base64_plaintext = base64_plaintext.replace("\r\n", "");
@@ -92,7 +92,7 @@ fn challenge_7_aes_in_ecb_mode(){
 
     let plain_text = aes_in_ecb::decrypt_bytes(&cipher_text, key);
 
-    let mut file = File::open("./src/aes_in_ecb/plain_text.txt").unwrap();
+    let mut file = File::open("./tests/challenge_7/plain_text.txt").unwrap();
     let mut correct_plain_text = String::new();
     file.read_to_string(&mut correct_plain_text).unwrap();
 
