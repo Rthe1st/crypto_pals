@@ -40,7 +40,7 @@ fn challenge_3_single_byte_xor_cipher() {
 #[test]
 fn challenge_4_detect_single_character_xor() {
     let mut results: Vec<single_byte_xor_cracker::Solution> = Vec::new();
-    let f = File::open("./tests/challenge_4.txt").unwrap();
+    let f = File::open("./tests/challenge_4/cipher_texts.txt").unwrap();
     let buf_reader = BufReader::new(f);
     for line in buf_reader.lines(){
         let cipher_text = &hex_decode(&line.unwrap());
