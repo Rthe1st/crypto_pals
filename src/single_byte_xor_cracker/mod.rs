@@ -24,7 +24,6 @@ pub fn crack(cipher_text: &[u8]) -> Solution {
         }
 
         let score = relative_score(&potential_plain_text);
-
         let solution = Solution { plain_text: potential_plain_text, cipher_text: cipher_text.to_vec(), key: potential_key, score: score};
         potential_plain_texts.push(solution);
     }

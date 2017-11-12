@@ -62,24 +62,23 @@ fn challenge_5_repeating_key_xor(){
     let key = String::from("ICE");
     let correct_cipher_text = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272\
                                a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
-    assert_eq!(repeating_xor::repeating_xor(plain_text.into_bytes(), key.into_bytes()), hex_decode(correct_cipher_text));
+    assert_eq!(repeating_xor::repeating_xor(&plain_text.into_bytes(), key.into_bytes()), hex_decode(correct_cipher_text));
 }
 
 #[test]
 fn challenge_6_break_repeating_key_xor(){
     let mut file = File::open("./tests/challenge_6/cipher_text.txt").unwrap();
-    let mut base64_plaintext = String::new();
-    file.read_to_string(&mut base64_plaintext).unwrap();
-    base64_plaintext = base64_plaintext.replace("\r\n", "");
-    let cipher_text = base64::decode(&base64_plaintext).unwrap();
-
-    let key = repeating_xor_cracker::crack(&cipher_text);
-
-    let plain_text = repeating_xor::repeating_xor(cipher_text, key);
-    //println!("{}", String::from_utf8_lossy(&plain_text));
-    panic!("everythings fucked");
-    //let actual_plain_text = b"";
-    //assert!(actual_plain_text, plain_text);
+    let mut base64_text = String::new();
+    file.read_to_string(&mut base64_text).unwrap();
+    base64_text = base64_text.replace("\r\n", "");
+    let cipher_text = base64::decode(&base64_text).unwrap();
+    let key = repeating_xor_cracker::crack(&cipher_text, 1).first().unwrap().to_vec();
+    let plain_text = repeating_xor::repeating_xor(&cipher_text, key);
+    let mut plain_file = File::open("./tests/challenge_6/plain_text.txt").unwrap();
+    let mut correct_plain_text = String::new();
+    plain_file.read_to_string(&mut correct_plain_text).unwrap();
+    correct_plain_text = correct_plain_text.replace("\r\n", "\n");
+    assert_eq!(u8_vec_to_string(&plain_text), correct_plain_text);
 }
 
 #[test]
