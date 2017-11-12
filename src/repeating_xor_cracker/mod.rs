@@ -77,7 +77,7 @@ pub fn crack(cipher_text: &[u8], key_guesses: usize) -> Vec<Vec<u8>> {
         }
         let mut key = vec![];
         for block in blocks {
-            let result = single_byte_xor_cracker::crack(block.as_slice());
+            let result = single_byte_xor_cracker::crack(&block);
             key.push(result.key);
         }
         possible_keys.push(key);
