@@ -7,7 +7,7 @@ use self::crypto_pals::fixed_xor;
 use self::crypto_pals::single_byte_xor_cracker;
 use self::crypto_pals::display_helpers::{ u8_vec_to_string };
 use self::crypto_pals::repeating_xor_cracker;
-use self::crypto_pals::aes_in_ecb;
+use self::crypto_pals::aes;
 use self::crypto_pals::repeating_xor;
 use std::fs::File;
 use std::io::{ BufReader, BufRead, Read};
@@ -90,7 +90,7 @@ fn challenge_7_aes_in_ecb_mode(){
     let cipher_text = base64::decode(&base64_plaintext).unwrap();
     let key = b"YELLOW SUBMARINE";
 
-    let plain_text = aes_in_ecb::decrypt_bytes(&cipher_text, key);
+    let plain_text = aes::decrypt_ecb(&cipher_text, key);
 
     let mut file = File::open("./tests/challenge_7/plain_text.txt").unwrap();
     let mut correct_plain_text = String::new();

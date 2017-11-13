@@ -4,7 +4,7 @@ extern crate base64;
 use self::crypto::{ aes, blockmodes};
 use self::crypto::buffer::{ RefReadBuffer, RefWriteBuffer, ReadBuffer, WriteBuffer, BufferResult };
 
-pub fn decrypt_bytes(cipher_text: &[u8], key: &[u8]) -> Vec<u8>{
+pub fn decrypt_ecb(cipher_text: &[u8], key: &[u8]) -> Vec<u8>{
         
     let mut decryptor = aes::ecb_decryptor(
             aes::KeySize::KeySize128,
@@ -27,7 +27,7 @@ pub fn decrypt_bytes(cipher_text: &[u8], key: &[u8]) -> Vec<u8>{
     plain_text
 }
 
-pub fn encrypt(plain_text: &[u8], key: &[u8]) -> Vec<u8>{
+pub fn encrypt_ecb(plain_text: &[u8], key: &[u8]) -> Vec<u8>{
     let mut encryptor = aes::ecb_encryptor(
             aes::KeySize::KeySize128,
             key,
