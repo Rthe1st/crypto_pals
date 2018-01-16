@@ -70,7 +70,7 @@ fn challenge_6_break_repeating_key_xor(){
     let mut file = File::open("./tests/challenge_6/cipher_text.txt").unwrap();
     let mut base64_text = String::new();
     file.read_to_string(&mut base64_text).unwrap();
-    base64_text = base64_text.replace("\r\n", "");
+    base64_text = base64_text.replace("\n", "");
     let cipher_text = base64::decode(&base64_text).unwrap();
     let key = repeating_xor_cracker::crack(&cipher_text, 1).first().unwrap().to_vec();
     let plain_text = repeating_xor::repeating_xor(&cipher_text, key);
