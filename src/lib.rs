@@ -6,3 +6,4 @@ pub mod repeating_xor;
 pub mod repeating_xor_cracker;
 pub mod aes;
 pub mod padding;
+pub mod oracles;
