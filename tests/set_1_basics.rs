@@ -77,7 +77,6 @@ fn challenge_6_break_repeating_key_xor(){
     let mut plain_file = File::open("./tests/challenge_6/plain_text.txt").unwrap();
     let mut correct_plain_text = String::new();
     plain_file.read_to_string(&mut correct_plain_text).unwrap();
-    correct_plain_text = correct_plain_text.replace("\r\n", "\n");
     assert_eq!(u8_vec_to_string(&plain_text), correct_plain_text);
 }
 
@@ -86,7 +85,7 @@ fn challenge_7_aes_in_ecb_mode(){
     let mut file = File::open("./tests/challenge_7/cipher_text.txt").unwrap();
     let mut base64_plaintext = String::new();
     file.read_to_string(&mut base64_plaintext).unwrap();
-    base64_plaintext = base64_plaintext.replace("\r\n", "");
+    base64_plaintext = base64_plaintext.replace("\n", "");
     let cipher_text = base64::decode(&base64_plaintext).unwrap();
     let key = b"YELLOW SUBMARINE";
 
